@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">firstApp</string>
+    <string name="textview">Hello world!</string>
+    <string name="action_settings">Share</string>
+    <string name="button">Update The TextView</string>
+    <string name="hint">A Name</string>
+
+
+</resources>
