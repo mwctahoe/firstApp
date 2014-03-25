@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">firstApp</string>
-    <string name="textview">Hello world!</string>
+    <string name="app_name">Bookmaster General</string>
+    <string name="textview">Search For Books!</string>
     <string name="action_settings">Share</string>
-    <string name="button">Update The TextView</string>
-    <string name="hint">A Name</string>
+    <string name="button">Search</string>
+    <string name="hint">Title and/or Author</string>
 
 
 </resources>
