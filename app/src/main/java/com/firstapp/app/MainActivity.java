@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -35,7 +36,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
     Button mainButton;
     EditText mainEditText;
     ListView mainListView;
-    ArrayAdapter mArrayAdapter;
+    JSONAdapter mJSONAdapter;
     ArrayList mNameList = new ArrayList();
     ShareActionProvider mShareActionProvider;
 
@@ -47,22 +48,23 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        setProgressBarIndeterminateVisibility(false);
+
         setContentView(R.layout.activity_main);
 
-
         mainTextView = (TextView) findViewById(R.id.main_textview);
-
         mainButton = (Button) findViewById(R.id.main_button);
         mainButton.setOnClickListener(this);
-
         mainEditText = (EditText) findViewById(R.id.main_edittext);
-
         mainListView = (ListView) findViewById(R.id.main_listview);
-        mArrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mNameList);
-        mainListView.setAdapter(mArrayAdapter);
         mainListView.setOnItemClickListener(this);
 
         displayWelcome();
+
+        mJSONAdapter = new JSONAdapter(this, getLayoutInflater());
+        mainListView.setAdapter(mJSONAdapter);
     }
 
     private void displayWelcome() {
@@ -146,7 +148,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d("BOOYAHKASHA", position + ":" + mNameList.get(position));
+        JSONObject jsonObject = (JSONObject) mJSONAdapter.getItem(position);
+        String coverID = jsonObject.optString("cover_i","");
+
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+        detailIntent.putExtra("coverID", coverID);
+
+        startActivity(detailIntent);
     }
 
 
@@ -160,16 +168,18 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
         }
 
         AsyncHttpClient client = new AsyncHttpClient();
-
+        setProgressBarIndeterminateVisibility(true);
         client.get(QUERY_URL + urlString, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(JSONObject jsonObject){
                 Toast.makeText(getApplicationContext(), "Great Success!", Toast.LENGTH_LONG).show();
-                Log.d("BOOYAHKASHA", jsonObject.toString());
+                mJSONAdapter.updateDate(jsonObject.optJSONArray("docs"));
+                setProgressBarIndeterminateVisibility(false);
             }
 
             @Override
             public void onFailure(int statusCode, Throwable throwable, JSONObject error) {
+                setProgressBarIndeterminateVisibility(false);
                 Toast.makeText(getApplicationContext(), "Error: " + statusCode + " " + throwable.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

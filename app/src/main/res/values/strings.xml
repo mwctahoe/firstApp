@@ -6,6 +6,7 @@
     <string name="action_settings">Share</string>
     <string name="button">Search</string>
     <string name="hint">Title and/or Author</string>
+    <string name="activity_details">Book Details</string>
 
 
 </resources>
